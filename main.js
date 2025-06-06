@@ -26,46 +26,47 @@ ipcMain.handle("select-file", async () => {
   });
   return result.filePaths[0];
 });
-
 ipcMain.handle("process-file", async (event, filePath) => {
   const workbook = XLSX.readFile(filePath);
   const sheet = workbook.Sheets[workbook.SheetNames[0]];
-  const data = XLSX.utils.sheet_to_json(sheet);
+  const data = XLSX.utils.sheet_to_json(sheet, {
+    header: "A",
+    defval: "",
+    range: 1,
+  });
 
   let errores = [];
   const dniSet = new Set();
-  data.forEach((fila, index) => {
-    // Ejemplo fila:
-    // { "Tipo Operaciòn": "I", "Tipo documento": "D", "Nro doc": 29695700, "ESTADO": "H" }
 
-    // Recorremos las columnas que queremos validar espacios extras
-    ["Tipo Operaciòn", "Tipo documento", "ESTADO"].forEach((col) => {
+  data.forEach((fila, index) => {
+    // Validar espacios en columnas A, B y J
+    ["A", "B", "J"].forEach((col) => {
       const valor = fila[col];
-      if (typeof valor === "string") {
-        // Chequear espacios al principio o final
-        if (valor.trim() !== valor) {
-          errores.push(
-            `Fila ${
-              index + 2
-            }: espacio extra en columna "${col}" (valor: "${valor}")`
-          );
-        }
+      if (typeof valor === "string" && valor.trim() !== valor) {
+        errores.push(
+          `Fila ${index + 2} | Columna ${col} : espacio extra (valor: "${valor}")`
+        );
       }
     });
-    // Validar DNI único
-    const rawDni = fila["Nro doc"];
-    if (rawDni === undefined || rawDni === null || String(rawDni).trim() === "") {
-      errores.push(`Fila ${index + 2}: DNI no definido (celda vacía)`);
+
+    // Validar DNI único (columna C)
+    const rawDni = fila["C"];
+    const dni = String(rawDni).trim();
+
+    if (!dni) {
+      errores.push(`Fila ${index + 2} | Columna C : DNI no definido (celda vacía)`);
     } else {
-      const dni = String(rawDni).trim();
+      if (!/^\d{7,8}$/.test(dni)) {
+        errores.push(`Fila ${index + 2} | Columna C : DNI inválido (${dni})`);
+      }
       if (dniSet.has(dni)) {
-        errores.push(`Fila ${index + 2}: DNI duplicado (${dni})`);
+        errores.push(`Fila ${index + 2} | Columna C : DNI duplicado (${dni})`);
       } else {
         dniSet.add(dni);
       }
     }
-
   });
+
   return errores;
 });
 

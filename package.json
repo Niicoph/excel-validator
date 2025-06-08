@@ -5,12 +5,9 @@
   "scripts": {
     "make:windows": "npm run build && electron-builder --win",
     "make": "npm run build && electron-builder ",
-    "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "npm run build:renderer && electron .",
-    "build": "cd renderer && npm install && npm run build",
+    "build:renderer": "cd renderer && npm install && npm run build",
     "start": "electron ."
-
-
   },
   "author": "Niicoph",
   "license": "MIT",

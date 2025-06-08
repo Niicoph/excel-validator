@@ -63,11 +63,11 @@ function App() {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 p-10">
+    <div className="min-h-screen w-full bg-gray-50 p-10 flex flex-col items-center justify-center gap-4">
       <Toaster position="top-right" richColors />
       <h1 className="text-3xl font-bold mb-6 text-center">Excel Validator</h1>
 
-      <Card className="max-w-2xl mx-auto">
+      <Card className="w-full max-w-6xl min-w-[24rem] mx-auto mt-4 p-6 space-y-4">
         <CardContent className="p-6 space-y-4">
           <Label htmlFor="file" className="mb-4">
             Seleccionar archivo Excel
@@ -90,14 +90,53 @@ function App() {
           </Button>
         </CardContent>
       </Card>
+      <Card className="w-full max-w-6xl min-w-[24rem] mx-auto mt-4 p-6 space-y-4">
+        <CardContent className="p-6 space-y-4">
+          <Label htmlFor="structure-info" className="mb-2">
+            Ejemplo formato del archivo Excel
+          </Label>
+
+          <div className="overflow-x-auto">
+            <table className="min-w-full table-auto border border-gray-200 text-sm text-center">
+              <thead className="bg-gray-100">
+                <tr>
+                  <th className="px-2 py-1 border">A</th>
+                  <th className="px-2 py-1 border">B</th>
+                  <th className="px-2 py-1 border">C</th>
+                  <th className="px-2 py-1 border">D</th>
+                  <th className="px-2 py-1 border">E</th>
+                  <th className="px-2 py-1 border">F</th>
+                  <th className="px-2 py-1 border">G</th>
+                  <th className="px-2 py-1 border">H</th>
+                  <th className="px-2 py-1 border">J</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td className="px-2 py-1 border">I</td>
+                  <td className="px-2 py-1 border">D</td>
+                  <td className="px-2 py-1 border">30393923</td>
+                  <td className="px-2 py-1 border">Juan.P</td>
+                  <td className="px-2 py-1 border">21/10/1994</td>
+                  <td className="px-2 py-1 border">M</td>
+                  <td className="px-2 py-1 border">1</td>
+                  <td className="px-2 py-1 border">0</td>
+                  <td className="px-2 py-1 border">H</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </CardContent>
+      </Card>
+
       {groupedErrors && (
-        <Card className="max-w-6xl mx-auto mt-4 p-4 shadow-md border border-red-300">
-          <h2 className="text-lg font-semibold text-red-600 mb-4">
+        <Card className="w-full max-w-6xl min-w-[24rem] mx-auto mt-4 p-6 space-y-4">
+          <h2 className="text-lg font-semibold text-red-600">
             Errores encontrados
           </h2>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {Object.entries(groupedErrors)
-              .sort(([colA], [colB]) => colA.localeCompare(colB)) // 👈 orden alfabético por columna
+              .sort(([colA], [colB]) => colA.localeCompare(colB))
               .map(([col, errores]) => (
                 <div key={col}>
                   <h3 className="text-md font-semibold text-red-500 mb-2">

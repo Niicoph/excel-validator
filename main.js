@@ -39,12 +39,12 @@ ipcMain.handle("process-file", async (event, filePath) => {
   const dniSet = new Set();
 
   data.forEach((fila, index) => {
-    // Validar espacios en columnas A, B y J
-    ["A", "B", "J"].forEach((col) => {
+    // Validar espacios en columnas A, B , F , G , H J
+    ["A", "B", "F", "G" , "H" , "J" ].forEach((col) => {
       const valor = fila[col];
       if (typeof valor === "string" && valor.trim() !== valor) {
         errores.push(
-          `Fila ${index + 2} | Columna ${col} : espacio extra (valor: "${valor}")`
+          `Fila ${index + 2} | Columna ${col} -> espacio extra (valor: "${valor}")`
         );
       }
     });
@@ -54,13 +54,13 @@ ipcMain.handle("process-file", async (event, filePath) => {
     const dni = String(rawDni).trim();
 
     if (!dni) {
-      errores.push(`Fila ${index + 2} | Columna C : DNI no definido (celda vacía)`);
+      errores.push(`Fila ${index + 2} | Columna C -> DNI no definido (celda vacía)`);
     } else {
       if (!/^\d{7,8}$/.test(dni)) {
-        errores.push(`Fila ${index + 2} | Columna C : DNI inválido (${dni})`);
+        errores.push(`Fila ${index + 2} | Columna C -> DNI inválido (${dni})`);
       }
       if (dniSet.has(dni)) {
-        errores.push(`Fila ${index + 2} | Columna C : DNI duplicado (${dni})`);
+        errores.push(`Fila ${index + 2} | Columna C -> DNI duplicado (${dni})`);
       } else {
         dniSet.add(dni);
       }

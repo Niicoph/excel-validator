@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "main.js",
   "scripts": {
-    "make:windows": "npm run build && electron-builder --win",
+    "make:windows": "npm run build:renderer && electron-builder --win",
     "make": "npm run build && electron-builder ",
     "dev": "npm run build:renderer && electron .",
     "build:renderer": "cd renderer && npm install && npm run build",

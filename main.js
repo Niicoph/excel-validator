@@ -32,19 +32,24 @@ ipcMain.handle("process-file", async (event, filePath) => {
   const data = XLSX.utils.sheet_to_json(sheet, {
     header: "A",
     defval: "",
-    range: 1,
   });
 
   let errores = [];
   const dniSet = new Set();
 
+
+
   data.forEach((fila, index) => {
     // Validar espacios en columnas A, B , F , G , H J
-    ["A", "B", "F", "G" , "H" , "J" ].forEach((col) => {
+    ["A", "B", "F", "G", "H", "J"].forEach((col) => {
       const valor = fila[col];
-      if (typeof valor === "string" && valor.trim() !== valor) {
+      const valorStr = valor == null ? "" : String(valor);
+
+      if (
+        /^[\s\u00A0\u2000-\u200B]+|[\s\u00A0\u2000-\u200B]+$/.test(valorStr)
+      ) {
         errores.push(
-          `Fila ${index + 2} | Columna ${col} -> espacio extra (valor: "${valor}")`
+          `Fila ${index + 1} | Columna ${col} -> espacio extra al inicio o final (valor: "${valorStr}")`
         );
       }
     });
@@ -54,7 +59,9 @@ ipcMain.handle("process-file", async (event, filePath) => {
     const dni = String(rawDni).trim();
 
     if (!dni) {
-      errores.push(`Fila ${index + 2} | Columna C -> DNI no definido (celda vacía)`);
+      errores.push(
+        `Fila ${index + 2} | Columna C -> DNI no definido (celda vacía)`
+      );
     } else {
       if (!/^\d{7,8}$/.test(dni)) {
         errores.push(`Fila ${index + 2} | Columna C -> DNI inválido (${dni})`);
